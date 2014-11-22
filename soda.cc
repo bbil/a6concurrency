@@ -3,6 +3,9 @@
 #include <limits>					// numeric_limits
 using namespace std;
 #include "config.h"
+#include "mprng.h"
+
+MPRNG MP;
 
 static bool comments( ifstream &in, string &name ) {
     for ( ;; ) {
@@ -73,5 +76,5 @@ void processConfigFile( const char *configFile, ConfigParms &cparms ) {
 }
 
 void uMain::umain(){
-    
+
 }
