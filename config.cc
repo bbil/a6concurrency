@@ -3,9 +3,6 @@
 #include <limits>					// numeric_limits
 using namespace std;
 #include "config.h"
-#include "mprng.h"
-
-MPRNG MP;
 
 static bool comments( ifstream &in, string &name ) {
     for ( ;; ) {
@@ -73,8 +70,8 @@ void processConfigFile( const char *configFile, ConfigParms &cparms ) {
         cerr << "Error: could not open input file \"" << configFile << "\"" << endl;
         exit( EXIT_FAILURE );    
     } // try
-}
+} // processConfigFile
 
-void uMain::umain(){
-
-}
+// Local Variables: //
+// compile-command: "make" //
+// End: //
