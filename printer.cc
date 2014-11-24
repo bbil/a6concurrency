@@ -9,17 +9,41 @@ Printer::Printer( unsigned int numStudents, unsigned int numVendingMachines, uns
     resume();
 }
 
-void Printer::print( Kind kind, char state ) {}
+void Printer::print( Kind kind, char state ) {
+    Printer::Info info(kind, state);
 
-void Printer::print( Kind kind, char state, int value1 ) {}
+    insertToBuffer(info);
+}
 
-void Printer::print( Kind kind, char state, int value1, int value2 ) {}
+void Printer::print( Kind kind, char state, int value1 ) {
+    Printer::Info info(kind, state, value1);
 
-void Printer::print( Kind kind, unsigned int lid, char state ) {}
+    insertToBuffer(info);
+}
 
-void Printer::print( Kind kind, unsigned int lid, char state, int value1 ) {}
+void Printer::print( Kind kind, char state, int value1, int value2 ) {
+    Printer::Info info(kind, state, value1, value2);
 
-void Printer::print( Kind kind, unsigned int lid, char state, int value1, int value2 ) {}
+    insertToBuffer(info);
+}
+
+void Printer::print( Kind kind, unsigned int lid, char state ) {
+    Printer::Info info(kind, state);
+
+    insertToBuffer(info, lid);
+}
+
+void Printer::print( Kind kind, unsigned int lid, char state, int value1 ) {
+    Printer::Info info(kind, state, value1);
+
+    insertToBuffer(info, lid);
+}
+
+void Printer::print( Kind kind, unsigned int lid, char state, int value1, int value2 ) {
+    Printer::Info info(kind, state, value1, value2);
+
+    insertToBuffer(info, lid);
+}
 
 void Printer::clearBuffers(){
     nonIdBuffer.clear();
@@ -182,6 +206,8 @@ void Printer::printInfo(Printer::Info info){
             break;
         case 'G':
             cout << state << info.value1;
+            break;
+        default:
             break;
     }
 }

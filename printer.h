@@ -22,7 +22,16 @@ _Cormonitor Printer {
         char state;
         int value1;
         int value2;
+
+        Info(Kind kind, char state) : kind(kind), state(state) {}
+        Info(Kind kind, char state, int value1 ) : kind(kind), state(state), value1(value1) {}
+        Info(Kind kind, char state, int value1, int value2 ) : kind(kind), state(state), value1(value1), value2(value2) {}
     };
+
+    void printInfo(Info info);
+    void clearBuffers();
+    void insertToBuffer(Info info);
+    void insertToBuffer(Info info, unsigned int lid);
 
     std::map<unsigned int, Info> nonIdBuffer;   //ids -> parent = 0, watcardoffice = 1, NameServer = 2, Truck = 3, BottlingPlant = 4
     std::map<unsigned int, Info> studentBuffer;
