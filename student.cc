@@ -17,7 +17,7 @@ void Student::main(){
         unsigned int yields = MP(1,10);
 
         try{
-            vendingMachine->buy(favouriteFlavour, watCard());
+            vendingMachine->buy(favouriteFlavour, *watCard());
             //call is successful, drink the soda
         } catch(VendingMachine::Funds){
             vendingMachine = nameServer.getMachine(id);
