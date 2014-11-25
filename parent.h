@@ -1,8 +1,8 @@
 #ifndef PARENT_H
 #define PARENT_H
 
-#include "printer.h"
-#include "bank.h"
+_Cormonitor Printer;
+_Monitor Bank;
 #include "mprng.h"
 
 extern MPRNG MP;

@@ -39,7 +39,7 @@ _Cormonitor Printer {
     std::map<unsigned int, Info> courierBuffer;
 
     unsigned int numStudents;
-    unsigned int numVendingMachines;
+    unsigned int numVending;
     unsigned int numCouriers;
 
 };

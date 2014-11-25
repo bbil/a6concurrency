@@ -2,10 +2,13 @@
 #define STUDENT_H
 
 #include "mprng.h"
-#include "printer.h"
-#include "nameserver.h"
-#include "watcardoffice.h"
-#include "vendingmachine.h"
+
+#include "watcard.h"
+
+_Cormonitor Printer;
+_Task NameServer;
+_Task WATCardOffice;
+_Task VendingMachine;
 
 
 extern MPRNG MP;

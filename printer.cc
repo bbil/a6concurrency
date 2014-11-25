@@ -56,49 +56,49 @@ void Printer::insertToBuffer(Printer::Info info){
     Printer::Kind kind = info.kind;
     switch(kind){
         case Parent:
-            if(nonIdBuffer.find(0) == buffer.end()){
+            if(nonIdBuffer.find(0) == nonIdBuffer.end()){
 
             } else {
                 resume();
                 clearBuffers();
             }
-            nonIdBuffer.insert(Pair<unsigned int, Info>(0, info));
+            nonIdBuffer.insert(pair<unsigned int, Info>(0, info));
             break;
         case WATCardOffice:
-            if(nonIdBuffer.find(1) == buffer.end()){
+            if(nonIdBuffer.find(1) == nonIdBuffer.end()){
 
             } else {
                 resume();
                 clearBuffers();
             }
-            nonIdBuffer.insert(Pair<unsigned int, Info>(1, info));
+            nonIdBuffer.insert(pair<unsigned int, Info>(1, info));
             break;
         case NameServer:
-            if(nonIdBuffer.find(2) == buffer.end()){
+            if(nonIdBuffer.find(2) == nonIdBuffer.end()){
 
             } else {
                 resume();
                 clearBuffers();
             }
-            nonIdBuffer.insert(Pair<unsigned int, Info>(2, info));
+            nonIdBuffer.insert(pair<unsigned int, Info>(2, info));
             break;
         case Truck:
-            if(nonIdBuffer.find(3) == buffer.end()){
+            if(nonIdBuffer.find(3) == nonIdBuffer.end()){
 
             } else {
                 resume();
                 clearBuffers();
             }
-            nonIdBuffer.insert(Pair<unsigned int, Info>(3, info));
+            nonIdBuffer.insert(pair<unsigned int, Info>(3, info));
             break;
         case BottlingPlant:
-            if(nonIdBuffer.find(4) == buffer.end()){
+            if(nonIdBuffer.find(4) == nonIdBuffer.end()){
 
             } else {
                 resume();
                 clearBuffers();
             }
-            nonIdBuffer.insert(Pair<unsigned int, Info>(4, info));
+            nonIdBuffer.insert(pair<unsigned int, Info>(4, info));
             break;
     }
 }
@@ -113,7 +113,7 @@ void Printer::insertToBuffer(Printer::Info info, unsigned int lid){
                 resume();
                 clearBuffers();
             }
-            studentBuffer.insert(Pair<unsigned int, Info>(lid, info));
+            studentBuffer.insert(pair<unsigned int, Info>(lid, info));
             break;
         case Vending:
             if(vendingBuffer.find(lid) == vendingBuffer.end()){
@@ -122,7 +122,7 @@ void Printer::insertToBuffer(Printer::Info info, unsigned int lid){
                 resume();
                 clearBuffers();
             }
-            vendingBuffer.insert(Pair<unsigned int, Info>(lid, info));
+            vendingBuffer.insert(pair<unsigned int, Info>(lid, info));
             break;
         case Courier:
             if(courierBuffer.find(lid) == courierBuffer.end()){
@@ -131,7 +131,7 @@ void Printer::insertToBuffer(Printer::Info info, unsigned int lid){
                 resume();
                 clearBuffers();
             }
-            courierBuffer.insert(Pair<unsigned int, Info>(lid, info));
+            courierBuffer.insert(pair<unsigned int, Info>(lid, info));
             break;
     }
 }
@@ -174,7 +174,7 @@ void Printer::printInfo(Printer::Info info){
             break;
         case 'B':
             if(kind == Vending){
-                cout << state << info.value1 "," << info.value2;
+                cout << state << info.value1 << "," << info.value2;
             } else {
                 cout << state << info.value1;
             }
@@ -235,7 +235,7 @@ void Printer::main(){
     cout << endl;
 
     for(unsigned int i=0; i < (5 + numStudents + numVending + numCouriers); i++){
-        cout << "*******" << "\t"
+        cout << "*******" << "\t";
     }
 
     cout << endl;

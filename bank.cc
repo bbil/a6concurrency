@@ -1,15 +1,18 @@
 #include "bank.h"
 
-Bank( unsigned int numStudents ) : numStudents(numStudents) {
-
-    for(int i = 0; i < numStudents; i++){
+Bank::Bank( unsigned int numStudents ) : numStudents(numStudents) {
+    waitingOnDeposit = new uCondition[numStudents];
+    for(unsigned int i = 0; i < numStudents; i++){
         accounts.insert(std::pair<unsigned int, int>(i, 0));
-        waitingOnDeposit.push_back(uCondition());
     }
 }
 
-void deposit( unsigned int id, unsigned int amount ) {
-    map<unsigned int, int>::iterator it = accounts.find(id);
+Bank::~Bank(){
+    delete[] waitingOnDeposit;
+}
+
+void Bank::deposit( unsigned int id, unsigned int amount ) {
+    std::map<unsigned int, int>::iterator it = accounts.find(id);
     if(it != accounts.end()){
         //account is found
         it->second+= amount;
@@ -18,8 +21,8 @@ void deposit( unsigned int id, unsigned int amount ) {
     }
 }
 
-void withdraw( unsigned int id, unsigned int amount ) {
-    map<unsigned int, int>::iterator it = accounts.find(id);
+void Bank::withdraw( unsigned int id, unsigned int amount ) {
+    std::map<unsigned int, int>::iterator it = accounts.find(id);
     if(it != accounts.end()){
         //account is found
 

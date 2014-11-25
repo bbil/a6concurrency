@@ -1,13 +1,27 @@
 #ifndef WATCARDOFFICE_H
 #define WATCARDOFFICE_H
 
+#include "watcard.h"
+_Cormonitor Printer;
+_Monitor Bank;
+
+
 _Task WATCardOffice {
+    struct Args
+    {
+        int iii;
+    };
+
     struct Job {                           // marshalled arguments and return future
         Args args;                         // call arguments (YOU DEFINE "Args")
         WATCard::FWATCard result;          // return future
         Job( Args args ) : args( args ) {}
     };
-    _Task Courier { ... };                 // communicates with bank
+
+    _Task Courier {
+     public:
+        virtual void main();
+    };                 // communicates with bank
 
     void main();
   public:

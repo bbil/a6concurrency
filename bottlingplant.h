@@ -1,6 +1,9 @@
 #ifndef BOTTLINGPLANT_H
 #define BOTTLINGPLANT_H
 
+_Cormonitor Printer;
+_Task NameServer;
+
 _Task BottlingPlant {
     void main();
   public:

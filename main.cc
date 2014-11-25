@@ -5,6 +5,7 @@ using namespace std;					// direct access to std
 #include <cstdlib>					// exit
 
 #include "config.h"
+#include "mprng.h"
 
 bool convert( int &val, char *buffer ) {		// convert C string to integer
     std::stringstream ss( buffer );			// connect stream and buffer
@@ -20,6 +21,8 @@ void usage( char *argv[] ) {
     exit( EXIT_FAILURE );				// TERMINATE
 } // usage
 
+
+MPRNG MP;
 
 
 void uMain::main() {

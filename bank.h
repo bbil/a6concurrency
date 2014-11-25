@@ -2,17 +2,17 @@
 #define BANK_H
 
 #include <map>
-#include <vector>
 
 _Monitor Bank {
   private:
     unsigned int numStudents;
 
-    std::vector<uCondition> waitingOnDeposit;
+    uCondition* waitingOnDeposit;
 
     std::map<unsigned int, int> accounts;   //map between studentId and money in account   
   public:
     Bank( unsigned int numStudents );
+    ~Bank();
     void deposit( unsigned int id, unsigned int amount );
     void withdraw( unsigned int id, unsigned int amount );
 };
