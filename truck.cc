@@ -65,6 +65,8 @@ void Truck::main() {
             first = false;
             machineToStockNext = (machineToStockNext + 1) % numVendingMachines;
         }
+
+        machineToStockNext = (machineToStockNext + 1) % numVendingMachines;
     }
 
 }
