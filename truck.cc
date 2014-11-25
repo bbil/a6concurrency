@@ -7,10 +7,11 @@
 Truck::Truck( Printer &prt, NameServer &nameServer, BottlingPlant &plant, 
     unsigned int numVendingMachines, unsigned int maxStockPerFlavour ) : printer(prt), nameServer(nameServer), plant(plant), numVendingMachines(numVendingMachines), maxStockPerFlavour(maxStockPerFlavour) {
 
-    for(unsigned int i = 0; i < numVendingMachines; i++){
-        vendingMachines.push_back(nameServer.getMachine(i));
+    VendingMachine** machineList = nameServer.getMachineList();
+    for(unsigned int i=0; i < numVendingMachines; i++){
+        vendingMachines.push_back(machineList[i]);
     }
-
+    
     machineToStockNext = 0;
 }
 
