@@ -46,9 +46,11 @@ void BottlingPlant::main() {
 
 void BottlingPlant::getShipment( unsigned int cargo[] ) {
 
-/*    if(isClosing){ figure this out
+    if(isClosing){
+        //silence extra exception
+        uRendezvousAcceptor();
         _Throw BottlingPlant::Shutdown();
-    }*/
+    }
 
     unsigned int flavourShipment = 0;
 
