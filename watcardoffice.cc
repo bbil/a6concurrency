@@ -28,6 +28,12 @@ void WATCardOffice::main() {
     for(;;){
         _Accept(~WATCardOffice){
             fin = true;
+
+            //not sure if needed
+            while(!jobs.empty()){
+                _Accept(requestWork);
+            }
+
             for(unsigned int i=0; i < numCouriers; i++){
                 _Accept(requestWork);
             }
@@ -81,17 +87,18 @@ void WATCardOffice::Courier::main(){
         unsigned int sid = job->args.sid;
         unsigned int amount = job->args.amount;
 
+        //withdraw from bank (can block)
+        bank.withdraw(sid, amount);
+
+        //deposit money to card
+        card->deposit(amount);
+
         
         if(MP(0,5) == 0){
             //1 in 6 chance to lose card
             job->result.exception(new WATCardOffice::Lost);
             delete card;
         } else {
-            //withdraw from bank (can block)
-            bank.withdraw(sid, amount);
-
-            //deposit money to card
-            card->deposit(amount);
 
             job->result.delivery(card);
         }
