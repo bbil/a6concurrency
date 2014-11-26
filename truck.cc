@@ -11,6 +11,8 @@ Truck::Truck( Printer &prt, NameServer &nameServer, BottlingPlant &plant,
     for(unsigned int i=0; i < numVendingMachines; i++){
         vendingMachines.push_back(machineList[i]);
     }
+
+    delete machineList;
     
     machineToStockNext = 0;
 }
