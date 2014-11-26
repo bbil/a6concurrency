@@ -17,6 +17,8 @@ _Task NameServer {
     unsigned int numVendingMachines;
     unsigned int numStudents;
 
+    unsigned int registeredMachines;
+
     void main();
   public:
     NameServer( Printer &prt, unsigned int numVendingMachines, unsigned int numStudents );

@@ -10,10 +10,14 @@ NameServer::NameServer( Printer &prt, unsigned int numVendingMachines, unsigned 
 
         studentToVending.insert(std::pair<unsigned int, unsigned int>(i, vendingMachineIdx));
     }
+
+    registeredMachines = 0;
 }
 
 void NameServer::VMregister( VendingMachine *vendingmachine ) {
     unsigned int id = vendingmachine->getId();
+
+    registeredMachines+=1;
 
     vendingMachines.insert(std::pair<unsigned int, VendingMachine*>(id, vendingmachine));
 }
@@ -48,10 +52,9 @@ VendingMachine **NameServer::getMachineList() {
 
 void NameServer::main() {
     for(;;){
-        _Accept(~VendingMachine);
-        or _Accept(getMachine);
-        or _Accept(getMachineList);
-        or _Accept(VMregister);
+        _Accept(~VendingMachine) break;
+        or _When(registeredMachines < numVendingMachines) _Accept(VMregister);
+        or _When(registeredMachines == numVendingMachines) _Accept(getMachine, getMachineList)
     }
 }
 
