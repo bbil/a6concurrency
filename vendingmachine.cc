@@ -16,7 +16,9 @@ VendingMachine::VendingMachine( Printer &prt, NameServer &nameServer, unsigned i
 }
 
 void VendingMachine::buy( VendingMachine::Flavours flavour, WATCard &card ) {
-    unsigned int stock = sodaInventory[(unsigned int)flavour];
+
+    unsigned int flavourIdx = (unsigned int)flavour;
+    unsigned int stock = sodaInventory[flavourIdx];
     if(stock == 0){
         //STOCK
         state = STOCK;
@@ -29,6 +31,8 @@ void VendingMachine::buy( VendingMachine::Flavours flavour, WATCard &card ) {
         state = FUNDS;
         return;
     }
+
+    sodaInventory[flavourIdx]-=1;
 
     //successfull purchase
     state = NORMAL;
