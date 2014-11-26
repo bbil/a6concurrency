@@ -3,8 +3,11 @@
 
 _Cormonitor Printer;
 _Task NameServer;
+#include "vendingmachine.h"
 #include "truck.h"
 #include "mprng.h"
+
+#include <map>
 
 extern MPRNG MP;
 
@@ -17,6 +20,13 @@ _Task BottlingPlant {
     unsigned int maxShippedPerFlavour;
     unsigned int maxStockPerFlavour;
     unsigned int timeBetweenShipments;
+
+    bool isClosing;
+
+    std::map<VendingMachine::Flavours, unsigned int> sodaProduced;
+
+    void produceSoda();
+
     void main();
   public:
     _Event Shutdown {};                    // shutdown plant
