@@ -17,6 +17,8 @@ _Task NameServer {
     unsigned int numVendingMachines;
     unsigned int numStudents;
 
+    VendingMachine* _registerMachine;                   //used for transfering data for main
+
     unsigned int registeredMachines;
 
     void main();
