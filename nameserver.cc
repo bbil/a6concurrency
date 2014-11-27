@@ -32,6 +32,8 @@ VendingMachine *NameServer::getMachine( unsigned int id ) {
         studentToVending[id] = newIdx;
     }
 
+    printer.print(Printer::NameServer, 'R', id, vendingMachineIdx);
+
     return vm;
 }
 
@@ -47,13 +49,19 @@ VendingMachine **NameServer::getMachineList() {
 }
 
 void NameServer::main() {
+
+    printer.print(Printer::NameServer, 'S');
+
     for(;;){
         _Accept(~VendingMachine) break;
         or _When(registeredMachines < numVendingMachines) _Accept(VMregister){
             registeredMachines+=1;
             vendingMachines.insert(std::pair<unsigned int, VendingMachine*>( _registerMachine->getId(), _registerMachine));
+            printer.print(Printer::NameServer, 'R', _registerMachine->getId());
         }
         or _When(registeredMachines == numVendingMachines) _Accept(getMachine, getMachineList)
     }
+
+    printer.print(Printer::NameServer, 'F');
 }
 

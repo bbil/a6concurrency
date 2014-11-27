@@ -19,6 +19,8 @@ Truck::Truck( Printer &prt, NameServer &nameServer, BottlingPlant &plant,
 
 void Truck::main() {
 
+    printer.print(Printer::Truck, 'S');
+
     for(;;){
 
         unsigned int yields = MP(1, 10);
@@ -32,11 +34,22 @@ void Truck::main() {
             return;
         }
 
+        unsigned int totalCargo = 0;
+
+        for(unsigned int i=0; i < 4; i++){
+            totalCargo+= cargo[i];
+        }
+
+        printer.print(Printer::Truck, 'P', totalCargo);
+
+
         unsigned int firstMachine = machineToStockNext;
         bool first = true;
         for(;;){
 
             if(!first && firstMachine == machineToStockNext) break;
+
+            printer.print(Printer::Truck, 'd', machineToStockNext, totalCargo);
 
             unsigned int* inventory = vendingMachines[machineToStockNext]->inventory();
 
@@ -53,11 +66,17 @@ void Truck::main() {
                         //fill up
                         availableCargo-=canAdd;
                         inVending+=canAdd;
+
+                        totalCargo-=canAdd;
                     } else {
                         //add as much as possible
                         unsigned int toAdd = canAdd - availableCargo;
                         availableCargo = 0;
                         inVending+=toAdd;
+
+                        totalCargo-=toAdd;
+
+                        printer.print(Printer::Truck, 'U', machineToStockNext, canAdd-toAdd);
                     }
                 }
 
@@ -65,12 +84,16 @@ void Truck::main() {
                 inventory[i] = inVending;
             }
 
+            printer.print(Printer::Truck, 'D', machineToStockNext, totalCargo);
+
             first = false;
             machineToStockNext = (machineToStockNext + 1) % numVendingMachines;
         }
 
         machineToStockNext = (machineToStockNext + 1) % numVendingMachines;
     }
+
+    printer.print(Printer::Truck, 'F');
 
 }
 

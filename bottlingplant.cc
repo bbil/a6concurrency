@@ -21,13 +21,19 @@ BottlingPlant::~BottlingPlant(){
 }
 
 void BottlingPlant::produceSoda(){
+    unsigned int totalProduced = 0;
     for(unsigned int i = 0; i < 4; i++){
         unsigned int produced = MP(0, maxShippedPerFlavour);    //create random amount for each flavour of soda
         sodaProduced[(VendingMachine::Flavours)i] += produced;
+        totalProduced+= produced;
     }
+
+    printer.print(Printer::BottlingPlant, 'G', totalProduced);
 }
 
 void BottlingPlant::main() {
+
+    printer.print(Printer::BottlingPlant, 'S');
 
     produceSoda();
 
@@ -37,11 +43,13 @@ void BottlingPlant::main() {
             break;
         }
         or _Accept(getShipment){
-
+            printer.print(Printer::BottlingPlant, 'P');
             yield(timeBetweenShipments);
             produceSoda();
         }
     }
+
+    printer.print(Printer::BottlingPlant, 'F');
 }
 
 void BottlingPlant::getShipment( unsigned int cargo[] ) {
