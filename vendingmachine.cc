@@ -37,6 +37,8 @@ void VendingMachine::buy( VendingMachine::Flavours flavour, WATCard &card ) {
     //successfull purchase
     state = NORMAL;
     card.withdraw(sodaCost);
+
+    printer.print(Printer::Vending, 'B', flavourIdx, sodaInventory[flavourIdx]);
 }
 
 unsigned int *VendingMachine::inventory() {
@@ -55,11 +57,16 @@ _Nomutex unsigned int VendingMachine::getId() {
 
 void VendingMachine::main(){
 
+    printer.print(Printer::Vending, 'S', sodaCost);
+
     for(;;){
         //stuff
         _Accept(inventory){
+            printer.print(Printer::Vending, 'r');
             //wait for a call to restock
             _Accept(restocked);
+
+            printer.print(Printer::Vending, 'R');
 
         } or _Accept(buy){
 
@@ -71,6 +78,8 @@ void VendingMachine::main(){
 
         }
     }
+
+    printer.print(Printer::Vending, 'F');
     
 }
 

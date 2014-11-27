@@ -7,6 +7,8 @@ Parent::Parent( Printer &prt, Bank &bank, unsigned int numStudents, unsigned int
 
 void Parent::main() {
 
+    printer.print(Printer::Parent, 'S');
+
     for(;;){
 
         _Accept(~Parent){
@@ -28,6 +30,8 @@ void Parent::main() {
         }
 
     }
+
+    printer.print(Printer::Parent, 'F');
 
 }
 

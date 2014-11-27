@@ -25,6 +25,8 @@ WATCardOffice::~WATCardOffice(){
 
 void WATCardOffice::main() {
 
+    printer.print(Printer::WATCardOffice, 'S');
+
     for(;;){
         _Accept(~WATCardOffice){
             fin = true;
@@ -40,9 +42,13 @@ void WATCardOffice::main() {
 
             break;
         } 
-        or _When(jobs.size() > 0) _Accept(requestWork);
+        or _When(jobs.size() > 0) _Accept(requestWork){
+            printer.print(Printer::WATCardOffice, 'W');
+        }
         or _Accept(create, transfer);
     }
+
+    printer.print(Printer::WATCardOffice, 'F');
 }
 
 WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount ) {
@@ -50,6 +56,8 @@ WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount )
     Job* job = new Job(args);
 
     jobs.push(job);
+
+    printer.print(Printer::WATCardOffice, 'C', sid, amount);
 
     return job->result;
 }
@@ -59,6 +67,8 @@ WATCard::FWATCard WATCardOffice::transfer( unsigned int sid, unsigned int amount
     Job* job = new Job(args);
 
     jobs.push(job);
+
+    printer.print(Printer::WATCardOffice, 'T', sid, amount);
 
     return job->result;
 }
@@ -75,6 +85,9 @@ WATCardOffice::Job *WATCardOffice::requestWork() {
 
 
 void WATCardOffice::Courier::main(){
+
+    printer.print(Printer::Courier, 'S');
+
     for(;;){
         //request work from administrator, blocks if no work available
         Job* job = office->requestWork();
@@ -86,11 +99,14 @@ void WATCardOffice::Courier::main(){
         unsigned int sid = job->args.sid;
         unsigned int amount = job->args.amount;
 
+        printer.print(Printer::Courier, 't', sid, amount);
+
         //withdraw from bank (can block)
         bank.withdraw(sid, amount);
 
         //deposit money to card
         card->deposit(amount);
+        printer.print(Printer::Courier, 'T', sid, amount);
 
         
         if(MP(0,5) == 0){
@@ -98,12 +114,13 @@ void WATCardOffice::Courier::main(){
             job->result.exception(new WATCardOffice::Lost);
             delete card;
         } else {
-
             job->result.delivery(card);
         }
 
         //free job memory, already popped off of job queue
         delete job;
     }
+
+    printer.print(Printer::Courier, 'F');
 }
 
