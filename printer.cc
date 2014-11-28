@@ -187,7 +187,11 @@ void Printer::printInfo(Printer::Info info){
             }
             break;
         case 'L':
-            cout << state << info.value1;
+            if(kind == Student){
+                cout << state;
+            } else {
+                cout << state << info.value1;
+            }
             break;
         case 'U':
             cout << state << info.value1 << "," << info.value2;

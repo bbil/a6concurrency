@@ -39,7 +39,7 @@ MPRNG MP;
 
 void uMain::main() {
     int seed = getpid();
-    MP.seed(seed);
+    
     char* configFile = "soda.config";
     
     //IO
@@ -57,6 +57,8 @@ void uMain::main() {
       default:						// wrong number of options
 	    usage( argv );
     }
+
+    MP.seed(seed);
 
     {
         vector<VendingMachine*> vendingMachines;
