@@ -9,12 +9,14 @@ Printer::Printer( unsigned int numStudents, unsigned int numVendingMachines, uns
     resume();
 }
 
+Printer::~Printer(){
+    cout << "***********************" << endl;
+}
+
 void Printer::print( Kind kind, char state ) {
-    //cout << "lol" <<endl;
     Printer::Info info(kind, state);
 
     insertToBuffer(info);
-    //cout << "GGG" << endl;
 }
 
 void Printer::print( Kind kind, char state, int value1 ) {
@@ -291,7 +293,6 @@ void Printer::main(){
 
         cout << endl;
     }
-    cout << "***********************" << endl;
 
 }
 

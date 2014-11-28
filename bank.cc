@@ -26,9 +26,8 @@ void Bank::withdraw( unsigned int id, unsigned int amount ) {
     if(it != accounts.end()){
         //account is found
 
-        int accountBal = it->second;
 
-        while(amount > accountBal){
+        while(amount > it->second){
             waitingOnDeposit[id].wait();
         }
 

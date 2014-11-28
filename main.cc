@@ -58,42 +58,46 @@ void uMain::main() {
 	    usage( argv );
     }
 
-    vector<VendingMachine*> vendingMachines;
-    vector<Student*> students;
+    {
+        vector<VendingMachine*> vendingMachines;
+        vector<Student*> students;
 
-    // start
-    ConfigParms parms;
-    processConfigFile( configFile, parms );
+        // start
+        ConfigParms parms;
+        processConfigFile( configFile, parms );
 
-    Printer printer(parms.numStudents, parms.numVendingMachines, parms.numCouriers);
+        Printer printer(parms.numStudents, parms.numVendingMachines, parms.numCouriers);
 
-    Bank bank(parms.numStudents);
+        Bank bank(parms.numStudents);
 
-    Parent parent(printer, bank, parms.numStudents, parms.parentalDelay);
+        Parent parent(printer, bank, parms.numStudents, parms.parentalDelay);
 
-    WATCardOffice watCardOffice(printer, bank, parms.numCouriers);
+        WATCardOffice watCardOffice(printer, bank, parms.numCouriers);
 
-    NameServer nameServer(printer, parms.numVendingMachines, parms.numStudents);
+        NameServer nameServer(printer, parms.numVendingMachines, parms.numStudents);
 
-    for(unsigned int i = 0; i < parms.numVendingMachines; i++){
-        vendingMachines.push_back(new VendingMachine(printer, nameServer, i, parms.sodaCost, parms.maxStockPerFlavour));
+        for(unsigned int i = 0; i < parms.numVendingMachines; i++){
+            vendingMachines.push_back(new VendingMachine(printer, nameServer, i, parms.sodaCost, parms.maxStockPerFlavour));
+        }
+
+        BottlingPlant* bottlingPlant = new BottlingPlant(printer, nameServer, parms.numVendingMachines, parms.maxShippedPerFlavour, parms.maxStockPerFlavour, parms.timeBetweenShipments);
+
+        for(unsigned int i = 0; i < parms.numStudents; i++){
+            students.push_back(new Student(printer, nameServer, watCardOffice, i, parms.maxPurchases));
+        }
+
+        for(unsigned int i = 0; i < parms.numStudents; i++){
+            delete students[i];
+        }
+
+        delete bottlingPlant;
+
+        for (unsigned int i = 0; i < parms.numVendingMachines; i++){
+            delete vendingMachines[i];
+        }
+
     }
 
-    BottlingPlant* bottlingPlant = new BottlingPlant(printer, nameServer, parms.numVendingMachines, parms.maxShippedPerFlavour, parms.maxStockPerFlavour, parms.timeBetweenShipments);
-
-    for(unsigned int i = 0; i < parms.numStudents; i++){
-        students.push_back(new Student(printer, nameServer, watCardOffice, i, parms.maxPurchases));
-    }
-
-    for(unsigned int i = 0; i < parms.numStudents; i++){
-        delete students[i];
-    }
-
-    delete bottlingPlant;
-
-    for (unsigned int i = 0; i < parms.numVendingMachines; i++){
-        delete vendingMachines[i];
-    }
 }
 
 

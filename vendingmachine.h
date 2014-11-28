@@ -27,6 +27,10 @@ _Task VendingMachine {
     unsigned int sodaCost;
     unsigned int maxStockPerFlavour;
 
+    Flavours _flavour;
+    WATCard* _card;
+    uCondition wait;
+
     InternalState state;
 
     unsigned int sodaInventory[4];

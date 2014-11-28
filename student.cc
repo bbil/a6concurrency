@@ -15,7 +15,7 @@ Student::~Student(){
 
 void Student::main(){
 
-    bottlesToPurchase = MP(0,maxPurchases);
+    bottlesToPurchase = MP(1,maxPurchases);
     favouriteFlavour = MP(0,3);
 
     printer.print(Printer::Student, id, 'S', favouriteFlavour, bottlesToPurchase);
@@ -32,23 +32,28 @@ void Student::main(){
 
     while(bottlesToPurchase > 0){
         try{
-            vendingMachine->buy((VendingMachine::Flavours)favouriteFlavour, *watCard());
+
+            vendingMachine->buy((VendingMachine::Flavours)favouriteFlavour, *(watCard()));
             printer.print(Printer::Student, id, 'B', watCard()->getBalance());
+
             bottlesToPurchase--;
             //call is successful, drink the soda
         } catch(WATCardOffice::Lost){
             printer.print(Printer::Student, id, 'L');
-            cardOffice.create(id, 5);
             lostError = true;
-        } catch(VendingMachine::Funds){
+            watCard = cardOffice.create(id, 5);
+        } catch(VendingMachine::Stock){
             vendingMachine = nameServer.getMachine(id);
             printer.print(Printer::Student, id, 'V', vendingMachine->getId());
-        } catch(VendingMachine::Stock){
+        } catch(VendingMachine::Funds){
             unsigned int cost = vendingMachine->cost();
-            cardOffice.transfer(id, cost+5, watCard());
+            watCard = cardOffice.transfer(id, cost+5, watCard());
         }
 
-        if(lostError) continue;
+        if(lostError){
+            lostError = false;
+            continue;
+        } 
 
         yields = MP(1,10);
         yield(yields);
