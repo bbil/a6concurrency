@@ -40,6 +40,9 @@ void BottlingPlant::main() {
     for(;;){
 
         _Accept(~BottlingPlant){
+            isClosing = true;
+
+            _Accept(getShipment);
             break;
         }
         or _Accept(getShipment){

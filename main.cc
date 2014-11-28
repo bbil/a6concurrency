@@ -39,6 +39,7 @@ MPRNG MP;
 
 void uMain::main() {
     int seed = getpid();
+    MP.seed(seed);
     char* configFile = "soda.config";
     
     //IO

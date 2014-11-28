@@ -1,15 +1,16 @@
 #include "watcardoffice.h"
-#include "printer.h"
 #include "watcard.h"
 #include "bank.h"
 
+#include <iostream>
+
 WATCardOffice::WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers )
-    : printer(printer), numCouriers(numCouriers){
+    : printer(prt), numCouriers(numCouriers){
 
         couriers = new Courier*[numCouriers];
 
         for(unsigned int i = 0; i < numCouriers; i++){
-            couriers[i] = new Courier(prt, bank, this);
+            couriers[i] = new Courier(prt, bank, this, i);
         }
 
         fin = false;
@@ -86,7 +87,7 @@ WATCardOffice::Job *WATCardOffice::requestWork() {
 
 void WATCardOffice::Courier::main(){
 
-    printer.print(Printer::Courier, 'S');
+    printer.print(Printer::Courier, id, 'S');
 
     for(;;){
         //request work from administrator, blocks if no work available
@@ -99,14 +100,14 @@ void WATCardOffice::Courier::main(){
         unsigned int sid = job->args.sid;
         unsigned int amount = job->args.amount;
 
-        printer.print(Printer::Courier, 't', sid, amount);
+        printer.print(Printer::Courier, id, 't', sid, amount);
 
         //withdraw from bank (can block)
         bank.withdraw(sid, amount);
 
         //deposit money to card
         card->deposit(amount);
-        printer.print(Printer::Courier, 'T', sid, amount);
+        printer.print(Printer::Courier, id, 'T', sid, amount);
 
         
         if(MP(0,5) == 0){
@@ -121,6 +122,6 @@ void WATCardOffice::Courier::main(){
         delete job;
     }
 
-    printer.print(Printer::Courier, 'F');
+    printer.print(Printer::Courier, id, 'F');
 }
 

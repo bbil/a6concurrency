@@ -10,8 +10,6 @@ VendingMachine::VendingMachine( Printer &prt, NameServer &nameServer, unsigned i
         sodaInventory[i] = 0;
     }
 
-    nameServer.VMregister(this);
-
     state = NORMAL;
 }
 
@@ -38,7 +36,7 @@ void VendingMachine::buy( VendingMachine::Flavours flavour, WATCard &card ) {
     state = NORMAL;
     card.withdraw(sodaCost);
 
-    printer.print(Printer::Vending, 'B', flavourIdx, sodaInventory[flavourIdx]);
+    printer.print(Printer::Vending, id, 'B', flavourIdx, sodaInventory[flavourIdx]);
 }
 
 unsigned int *VendingMachine::inventory() {
@@ -57,16 +55,19 @@ _Nomutex unsigned int VendingMachine::getId() {
 
 void VendingMachine::main(){
 
-    printer.print(Printer::Vending, 'S', sodaCost);
+    printer.print(Printer::Vending, id, 'S', sodaCost);
+
+    nameServer.VMregister(this);
 
     for(;;){
         //stuff
-        _Accept(inventory){
-            printer.print(Printer::Vending, 'r');
+        _Accept(~VendingMachine) break;
+        or _Accept(inventory){
+            printer.print(Printer::Vending, id, 'r');
             //wait for a call to restock
             _Accept(restocked);
 
-            printer.print(Printer::Vending, 'R');
+            printer.print(Printer::Vending, id, 'R');
 
         } or _Accept(buy){
 
@@ -79,7 +80,7 @@ void VendingMachine::main(){
         }
     }
 
-    printer.print(Printer::Vending, 'F');
+    printer.print(Printer::Vending, id, 'F');
     
 }
 

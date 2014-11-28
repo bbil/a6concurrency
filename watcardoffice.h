@@ -5,7 +5,7 @@
 
 #include "mprng.h"
 #include "watcard.h"
-_Cormonitor Printer;
+#include "printer.h"
 _Monitor Bank;
 
 extern MPRNG MP;
@@ -35,8 +35,9 @@ _Task WATCardOffice {
         Printer& printer;
         Bank& bank;
         WATCardOffice* office;
+        unsigned int id;
       public:
-        Courier(Printer& printer, Bank& b, WATCardOffice* office) : printer(printer), bank(b), office(office) {}
+        Courier(Printer& printer, Bank& b, WATCardOffice* office, unsigned int id) : printer(printer), bank(b), office(office), id(id) {}
         virtual void main();
     };                 // communicates with bank
 

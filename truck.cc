@@ -4,6 +4,8 @@
 #include "bottlingplant.h"
 #include "vendingmachine.h"
 
+#include <iostream>
+
 Truck::Truck( Printer &prt, NameServer &nameServer, BottlingPlant &plant, 
     unsigned int numVendingMachines, unsigned int maxStockPerFlavour ) : printer(prt), nameServer(nameServer), plant(plant), numVendingMachines(numVendingMachines), maxStockPerFlavour(maxStockPerFlavour) {
 
@@ -40,6 +42,8 @@ void Truck::main() {
             totalCargo+= cargo[i];
         }
 
+        
+
         printer.print(Printer::Truck, 'P', totalCargo);
 
 
@@ -47,20 +51,30 @@ void Truck::main() {
         bool first = true;
         for(;;){
 
-            if(!first && firstMachine == machineToStockNext) break;
+            if((!first && firstMachine == machineToStockNext) || totalCargo == 0) break;
 
             printer.print(Printer::Truck, 'd', machineToStockNext, totalCargo);
 
             unsigned int* inventory = vendingMachines[machineToStockNext]->inventory();
 
-            for(unsigned int i=0; i <= 4; i++){
+            bool filled = true;
+            unsigned int notReplenished = 0;
+
+            //loop through flavours
+            for(unsigned int i=0; i < 4; i++){
                 unsigned int availableCargo = cargo[i];
                 unsigned int inVending = inventory[i];
 
                 if(inVending < maxStockPerFlavour){
+
                     //can add more soda into machine
-                    
                     unsigned int canAdd = maxStockPerFlavour - inVending;
+
+                    if(availableCargo == 0){
+                        filled = false;
+                        notReplenished+=canAdd;
+                        continue;
+                    }
 
                     if(availableCargo >= canAdd){
                         //fill up
@@ -70,13 +84,14 @@ void Truck::main() {
                         totalCargo-=canAdd;
                     } else {
                         //add as much as possible
-                        unsigned int toAdd = canAdd - availableCargo;
+                        inVending+=availableCargo;
+                        totalCargo-=availableCargo;
+                        notReplenished+=canAdd-availableCargo;
+
                         availableCargo = 0;
-                        inVending+=toAdd;
 
-                        totalCargo-=toAdd;
-
-                        printer.print(Printer::Truck, 'U', machineToStockNext, canAdd-toAdd);
+                        filled = false;
+                        
                     }
                 }
 
@@ -84,13 +99,17 @@ void Truck::main() {
                 inventory[i] = inVending;
             }
 
+            if(!filled){
+                printer.print(Printer::Truck, 'U', machineToStockNext, notReplenished);
+            }
+
             printer.print(Printer::Truck, 'D', machineToStockNext, totalCargo);
+
+            vendingMachines[machineToStockNext]->restocked();
 
             first = false;
             machineToStockNext = (machineToStockNext + 1) % numVendingMachines;
         }
-
-        machineToStockNext = (machineToStockNext + 1) % numVendingMachines;
     }
 
     printer.print(Printer::Truck, 'F');

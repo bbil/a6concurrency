@@ -6,7 +6,7 @@ Parent::Parent( Printer &prt, Bank &bank, unsigned int numStudents, unsigned int
                     printer(prt), bank(bank), numStudents(numStudents), parentalDelay(parentalDelay) {}
 
 void Parent::main() {
-
+    
     printer.print(Printer::Parent, 'S');
 
     for(;;){
@@ -14,6 +14,7 @@ void Parent::main() {
         _Accept(~Parent){
             //print finish statement
             printer.print(Printer::Parent, 'f');
+            break;
         } _Else {
             //yield before giving money
             yield(parentalDelay);

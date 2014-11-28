@@ -26,13 +26,12 @@ VendingMachine *NameServer::getMachine( unsigned int id ) {
     if(vendingMachines.find(vendingMachineIdx) != vendingMachines.end()){
         vm = vendingMachines.at(vendingMachineIdx);
 
-
         //give the student the next vending machine id (modulo), for the next time getMachine is called by the student
         unsigned int newIdx = (vendingMachineIdx + 1) % numVendingMachines;
         studentToVending[id] = newIdx;
     }
 
-    printer.print(Printer::NameServer, 'R', id, vendingMachineIdx);
+    printer.print(Printer::NameServer, 'N', id, vendingMachineIdx);
 
     return vm;
 }
@@ -53,13 +52,13 @@ void NameServer::main() {
     printer.print(Printer::NameServer, 'S');
 
     for(;;){
-        _Accept(~VendingMachine) break;
+        _Accept(~NameServer) break;
         or _When(registeredMachines < numVendingMachines) _Accept(VMregister){
             registeredMachines+=1;
             vendingMachines.insert(std::pair<unsigned int, VendingMachine*>( _registerMachine->getId(), _registerMachine));
             printer.print(Printer::NameServer, 'R', _registerMachine->getId());
         }
-        or _When(registeredMachines == numVendingMachines) _Accept(getMachine, getMachineList)
+        or _When(registeredMachines == numVendingMachines) _Accept(getMachine, getMachineList);
     }
 
     printer.print(Printer::NameServer, 'F');

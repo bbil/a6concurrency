@@ -10,9 +10,11 @@ Printer::Printer( unsigned int numStudents, unsigned int numVendingMachines, uns
 }
 
 void Printer::print( Kind kind, char state ) {
+    //cout << "lol" <<endl;
     Printer::Info info(kind, state);
 
     insertToBuffer(info);
+    //cout << "GGG" << endl;
 }
 
 void Printer::print( Kind kind, char state, int value1 ) {
@@ -53,6 +55,9 @@ void Printer::clearBuffers(){
 }
 
 void Printer::insertToBuffer(Printer::Info info){
+
+    //cout << (unsigned int)info.kind << endl << info.state << endl << info.value1 << endl << info.value2 << endl;
+
     Printer::Kind kind = info.kind;
     switch(kind){
         case Parent:
