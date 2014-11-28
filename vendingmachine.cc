@@ -15,28 +15,16 @@ VendingMachine::VendingMachine( Printer &prt, NameServer &nameServer, unsigned i
 
 void VendingMachine::buy( VendingMachine::Flavours flavour, WATCard &card ) {
 
-    unsigned int flavourIdx = (unsigned int)flavour;
-    unsigned int stock = sodaInventory[flavourIdx];
-    if(stock == 0){
-        //STOCK
-        state = STOCK;
-        return;
+    _flavour = flavour;
+    _card = &card;
+
+    wait.wait();
+
+    if(state == FUNDS){
+        _Throw Funds();
+    } else if(state == STOCK){
+        _Throw Stock();
     }
-
-    unsigned int bal = card.getBalance();
-    if(bal < sodaCost){
-        //FUNDS
-        state = FUNDS;
-        return;
-    }
-
-    sodaInventory[flavourIdx]-=1;
-
-    //successfull purchase
-    state = NORMAL;
-    card.withdraw(sodaCost);
-
-    printer.print(Printer::Vending, id, 'B', flavourIdx, sodaInventory[flavourIdx]);
 }
 
 unsigned int *VendingMachine::inventory() {
@@ -62,22 +50,38 @@ void VendingMachine::main(){
     for(;;){
         //stuff
         _Accept(~VendingMachine) break;
+        or _Accept(buy){
+
+            unsigned int flavourIdx = (unsigned int)_flavour;
+            unsigned int stock = sodaInventory[flavourIdx];
+            unsigned int bal = _card->getBalance();
+
+            if(stock == 0){
+                //STOCK
+                state = STOCK;
+            } else if(bal < sodaCost){
+                //FUNDS
+                state = FUNDS;
+            } else {
+                //NORMAL
+                state = NORMAL;
+                sodaInventory[flavourIdx]-=1;
+                //successfull purchase
+                
+                _card->withdraw(sodaCost);
+
+                printer.print(Printer::Vending, id, 'B', flavourIdx, sodaInventory[flavourIdx]);
+            }
+
+            wait.signalBlock();
+        }
         or _Accept(inventory){
             printer.print(Printer::Vending, id, 'r');
             //wait for a call to restock
             _Accept(restocked);
 
             printer.print(Printer::Vending, id, 'R');
-
-        } or _Accept(buy){
-
-            if(state == FUNDS){
-                //_Resume Funds() _At 
-            } else if(state == STOCK){
-                //_Resume Stock() _At 
-            }
-
-        }
+        } 
     }
 
     printer.print(Printer::Vending, id, 'F');

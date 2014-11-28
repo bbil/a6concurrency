@@ -43,9 +43,7 @@ void WATCardOffice::main() {
 
             break;
         } 
-        or _When(jobs.size() > 0) _Accept(requestWork){
-            printer.print(Printer::WATCardOffice, 'W');
-        }
+        or _When(jobs.size() > 0) _Accept(requestWork);
         or _Accept(create, transfer);
     }
 
@@ -81,6 +79,7 @@ WATCardOffice::Job *WATCardOffice::requestWork() {
     Job* curJob = jobs.front();
     jobs.pop();
 
+    printer.print(Printer::WATCardOffice, 'W');
     return curJob;
 }
 

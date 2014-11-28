@@ -7,6 +7,7 @@ _Cormonitor Printer {
   public:
     enum Kind { Parent=0, WATCardOffice=1, NameServer=2, Truck=3, BottlingPlant=4, Student=5, Vending=6, Courier=7 };
     Printer( unsigned int numStudents, unsigned int numVendingMachines, unsigned int numCouriers );
+    ~Printer();
     void print( Kind kind, char state );
     void print( Kind kind, char state, int value1 );
     void print( Kind kind, char state, int value1, int value2 );
