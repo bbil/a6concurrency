@@ -32,7 +32,7 @@ void VendingMachine::buy( VendingMachine::Flavours flavour, WATCard &card ) {
         return;
     }
 
-    sodaInventory[flavourIdx]-=1;
+    sodaInventory[flavourIdx] -= 1;
 
     //successfull purchase
     state = NORMAL;
@@ -57,7 +57,7 @@ _Nomutex unsigned int VendingMachine::getId() {
 
 void VendingMachine::main(){
 
-    printer.print(Printer::Vending, 'S', sodaCost);
+    printer.print(Printer::Vending, id, 'S', sodaCost);
 
     for(;;){
         //stuff
@@ -79,7 +79,7 @@ void VendingMachine::main(){
         }
     }
 
-    printer.print(Printer::Vending, 'F');
+    printer.print(Printer::Vending, id, 'F');
     
 }
 

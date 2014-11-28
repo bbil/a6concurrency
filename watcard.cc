@@ -5,11 +5,11 @@ WATCard::WATCard() {
 }
 
 void WATCard::deposit( unsigned int amount ) {
-    balance+=amount;
+    balance += amount;
 }
 
 void WATCard::withdraw( unsigned int amount ) {
-    balance-= amount;
+    balance -= amount;
 }
 
 unsigned int WATCard::getBalance() {

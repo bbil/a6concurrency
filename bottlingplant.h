@@ -23,7 +23,7 @@ _Task BottlingPlant {
 
     bool isClosing;
 
-    std::map<VendingMachine::Flavours, unsigned int> sodaProduced;
+    unsigend in sodaProduced[4];
 
     void produceSoda();
 

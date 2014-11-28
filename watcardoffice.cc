@@ -4,7 +4,7 @@
 #include "bank.h"
 
 WATCardOffice::WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers )
-    : printer(printer), numCouriers(numCouriers){
+    : printer(prt), numCouriers(numCouriers){
 
         couriers = new Courier*[numCouriers];
 

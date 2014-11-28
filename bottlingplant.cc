@@ -9,8 +9,8 @@ BottlingPlant::BottlingPlant( Printer &prt, NameServer &nameServer, unsigned int
     truck = new Truck(printer, nameServer, *this, numVendingMachines, maxStockPerFlavour);
 
     //initialize plant to having 0 of each flavour on hand
-    for(unsigned int i = 0; i < 4; i++){
-        sodaProduced.insert(std::pair<VendingMachine::Flavours, unsigned int>((VendingMachine::Flavours)i, 0));
+    for( int i = 0; i < 4; i++ ){
+        sodaProduced[i] = 0;
     }
 
     isClosing = false;
@@ -21,11 +21,12 @@ BottlingPlant::~BottlingPlant(){
 }
 
 void BottlingPlant::produceSoda(){
-    unsigned int totalProduced = 0;
-    for(unsigned int i = 0; i < 4; i++){
-        unsigned int produced = MP(0, maxShippedPerFlavour);    //create random amount for each flavour of soda
-        sodaProduced[(VendingMachine::Flavours)i] += produced;
-        totalProduced+= produced;
+    int totalProduced = 0;
+    
+    for( int i = 0; i < 4; i++ ) {
+        int produced = MP(maxShippedPerFlavour);    //create random amount for each flavour of soda
+        sodaProduced[i] += produced;
+        totalProduced += produced;
     }
 
     printer.print(Printer::BottlingPlant, 'G', totalProduced);
@@ -40,6 +41,9 @@ void BottlingPlant::main() {
     for(;;){
 
         _Accept(~BottlingPlant){
+            isClosing = true;
+            //call it once more to throw shutdown
+            _Accept( getShipment );
             break;
         }
         or _Accept(getShipment){
@@ -54,24 +58,18 @@ void BottlingPlant::main() {
 
 void BottlingPlant::getShipment( unsigned int cargo[] ) {
 
-    if(isClosing){
+    if( isClosing ){
         //silence extra exception
         uRendezvousAcceptor();
         _Throw BottlingPlant::Shutdown();
     }
 
-    unsigned int flavourShipment = 0;
-
-    for(unsigned int i = 0; i < 4; i++){
-
-        //amount of soda of this flavour produced
-        flavourShipment = sodaProduced[(VendingMachine::Flavours)i];
-
+    for( int i = 0; i < 4; i++ ){
         //transfer to truck
-        cargo[i] = flavourShipment;
+        cargo[i] = sodaProduced[i];
 
         //remove stock of flavour in plant
-        sodaProduced[(VendingMachine::Flavours)i] = 0;
+        sodaProduced[i] = 0;
     }
 }
 

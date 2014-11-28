@@ -1,292 +1,131 @@
 #include "printer.h"
-
 #include <iostream>
+
+const unsigned int SUM_OF_SINGLE_KINDS = 5;
+const int NO_VALUE = -1;
 
 using namespace std;
 
+// Ctor, initialises member fields and prints header
 Printer::Printer( unsigned int numStudents, unsigned int numVendingMachines, unsigned int numCouriers ) :
- numStudents(numStudents), numVending(numVendingMachines), numCouriers(numCouriers) {
-    resume();
+  students(numStudents), machines(numVendingMachines), couriers(numCouriers) {
+  total_size = SUM_OF_SINGLE_KINDS + students + machines + couriers;
+  entries = new Entry [total_size];
+
+  // Print header
+  cout << "Parent\tWATOff\tNames\tTruck\tPlant\t";
+  for (unsigned int i = 0; i < students; i++) {
+    cout << "Stud" << i << '\t';
+  }
+  for (unsigned int i = 0; i < machines; i++) {
+    cout << "Mach" << i << '\t';
+  }
+  for (unsigned int i = 0; i < couriers; i++) {
+    cout << "Cour" << i << '\t';
+  }
+  cout << endl;
+  for (unsigned int i = 0; i < total_size; i++) {
+    cout << "=======" << '\t';
+  }
+  cout << endl;
+
+  // Initialise entries
+  for (unsigned int i = 0; i < total_size; i++) {
+    entries[i].filled = false;
+  }
+}
+
+// Print footer, free memory
+Printer::~Printer () {
+  cout << "***********************" << endl;
+  delete [] entries;
+}
+
+_Mutex void Printer::print( unsigned int id, char state, int value1, int value2) {
+  if (state == 'F') {
+      // check if we need to flush beforehand
+      for (unsigned int i = 0; i < total_size; i++) {
+          if (entries[id].filled) {
+            flush();
+            break;
+          }
+      }
+
+      // print the finished state
+      for (unsigned int i = 0; i < total_size; i++) {
+        if (id != i)
+            cout << "...";
+        else
+            cout << state;
+        cout << "\t";
+      }
+      cout << endl;
+  } else if (entries[id].filled) {
+      flush();
+  }
+
+  if (state != 'F') {
+    entries[id].state  = state;
+    entries[id].value1 = value1;
+    entries[id].value2 = value2;
+    entries[id].filled = true;
+  }
 }
 
 void Printer::print( Kind kind, char state ) {
-    Printer::Info info(kind, state);
-
-    insertToBuffer(info);
+  print(kind, state, NO_VALUE, NO_VALUE);
 }
 
 void Printer::print( Kind kind, char state, int value1 ) {
-    Printer::Info info(kind, state, value1);
-
-    insertToBuffer(info);
+  print(kind, state, value1, NO_VALUE);
 }
 
 void Printer::print( Kind kind, char state, int value1, int value2 ) {
-    Printer::Info info(kind, state, value1, value2);
-
-    insertToBuffer(info);
+  print(kind, 0, state, value1, value2);
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state ) {
-    Printer::Info info(kind, state);
-
-    insertToBuffer(info, lid);
+  print(kind, lid, state, NO_VALUE, NO_VALUE);
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1 ) {
-    Printer::Info info(kind, state, value1);
-
-    insertToBuffer(info, lid);
+  print(kind, lid, state, value1, NO_VALUE);
 }
 
 void Printer::print( Kind kind, unsigned int lid, char state, int value1, int value2 ) {
-    Printer::Info info(kind, state, value1, value2);
+  int offset = 0;
+  switch (kind) {
+    case Student:
+      offset = SUM_OF_SINGLE_KINDS;
+      break;
+    case Vending:
+      offset = SUM_OF_SINGLE_KINDS + students;
+      break;
+    case Courier:
+      offset = SUM_OF_SINGLE_KINDS + students + machines;
+      break;
+    default:
+      offset = (unsigned int) kind;
+      break;
+  }
 
-    insertToBuffer(info, lid);
+  print(offset + lid, state, value1, value2);
 }
 
-void Printer::clearBuffers(){
-    nonIdBuffer.clear();
-    studentBuffer.clear();
-    vendingBuffer.clear();
-    courierBuffer.clear();
-}
-
-void Printer::insertToBuffer(Printer::Info info){
-    Printer::Kind kind = info.kind;
-    switch(kind){
-        case Parent:
-            if(nonIdBuffer.find(0) == nonIdBuffer.end()){
-
-            } else {
-                resume();
-                clearBuffers();
-            }
-            nonIdBuffer.insert(pair<unsigned int, Info>(0, info));
-            break;
-        case WATCardOffice:
-            if(nonIdBuffer.find(1) == nonIdBuffer.end()){
-
-            } else {
-                resume();
-                clearBuffers();
-            }
-            nonIdBuffer.insert(pair<unsigned int, Info>(1, info));
-            break;
-        case NameServer:
-            if(nonIdBuffer.find(2) == nonIdBuffer.end()){
-
-            } else {
-                resume();
-                clearBuffers();
-            }
-            nonIdBuffer.insert(pair<unsigned int, Info>(2, info));
-            break;
-        case Truck:
-            if(nonIdBuffer.find(3) == nonIdBuffer.end()){
-
-            } else {
-                resume();
-                clearBuffers();
-            }
-            nonIdBuffer.insert(pair<unsigned int, Info>(3, info));
-            break;
-        case BottlingPlant:
-            if(nonIdBuffer.find(4) == nonIdBuffer.end()){
-
-            } else {
-                resume();
-                clearBuffers();
-            }
-            nonIdBuffer.insert(pair<unsigned int, Info>(4, info));
-            break;
-    }
-}
-
-void Printer::insertToBuffer(Printer::Info info, unsigned int lid){
-    Printer::Kind kind = info.kind;
-    switch(kind){
-        case Student:
-            if(studentBuffer.find(lid) == studentBuffer.end()){
-
-            } else {
-                resume();
-                clearBuffers();
-            }
-            studentBuffer.insert(pair<unsigned int, Info>(lid, info));
-            break;
-        case Vending:
-            if(vendingBuffer.find(lid) == vendingBuffer.end()){
-
-            } else {
-                resume();
-                clearBuffers();
-            }
-            vendingBuffer.insert(pair<unsigned int, Info>(lid, info));
-            break;
-        case Courier:
-            if(courierBuffer.find(lid) == courierBuffer.end()){
-
-            } else {
-                resume();
-                clearBuffers();
-            }
-            courierBuffer.insert(pair<unsigned int, Info>(lid, info));
-            break;
-    }
-}
-
-void Printer::printInfo(Printer::Info info){
-    char state = info.state;
-    Printer::Kind kind = info.kind;
-
-    switch(state){
-        case 'S':
-            if(kind == Student){
-                cout << state << info.value1 << "," << info.value2;
-            } else if(kind == Vending){
-                cout << state << info.value1;
-            } else {
-                cout << state;
-            }
-            break;
-        case 'D':
-            cout << state << info.value1 << "," << info.value2;
-            break;
-        case 'd': 
-            cout << state << info.value1 << "," << info.value2;
-            break;
-        case 'R':
-            if(kind == Vending){
-                cout << state;
-            } else {
-                cout << state << info.value1;
-            }
-            break;
-        case 'r':
-            cout << state;
-            break;
-        case 'C':
-            cout << state << info.value1 << "," << info.value2;
-            break;
-        case 'W':
-            cout << state;
-            break;
-        case 'B':
-            if(kind == Vending){
-                cout << state << info.value1 << "," << info.value2;
-            } else {
-                cout << state << info.value1;
-            }
-            break;
-        case 'L':
-            cout << state << info.value1;
-            break;
-        case 'U':
-            cout << state << info.value1 << "," << info.value2;
-            break;
-        case 'T':
-            cout << state << info.value1 << "," << info.value2;
-            break;
-        case 't':
-            cout << state << info.value1 << "," << info.value2;
-            break;
-        case 'V':
-            cout << state << info.value1;
-            break;
-        case 'N':
-            cout << state << info.value1 << "," << info.value2;
-            break;
-        case 'P':
-            if(kind == BottlingPlant){
-                cout << state;
-            } else {
-                cout << state << info.value1;
-            }
-            break;
-        case 'G':
-            cout << state << info.value1;
-            break;
-        default:
-            break;
-    }
-}
-
-void Printer::main(){
-
-    cout << "Parent" << "\t";
-    cout << "WatOff" << "\t";
-    cout << "Names" << "\t";
-    cout << "Truck" << "\t";
-    cout << "Plant" << "\t";
-
-    for(unsigned int i = 0; i < numStudents; i++){
-        cout << "Stud" << i << "\t";
-    }
-
-    for(unsigned int i = 0; i < numVending; i++){
-        cout << "Mach" << i << "\t";
-    }
-
-    for(unsigned int i=0; i < numCouriers; i++){
-        cout << "Cour" << i << "\t";
-    }
-
-    cout << endl;
-
-    for(unsigned int i=0; i < (5 + numStudents + numVending + numCouriers); i++){
-        cout << "*******" << "\t";
-    }
-
-    cout << endl;
-
-    for(;;){
-        suspend();
-
-        //print that stuff
-
-        for(unsigned int i = 0; i < 5; i++){
-            if(nonIdBuffer.find(i) != nonIdBuffer.end()){
-                //found
-
-                Printer::Info info = nonIdBuffer.at(i);
-                printInfo(info);
-            }
-
-            cout << "\t";
+// Flush buffered data to console output
+void Printer::flush () {
+  for (unsigned int i = 0; i < total_size; i++) {
+    if (entries[i].filled) {
+      cout << entries[i].state;
+      if (entries[i].value1 != NO_VALUE) {
+        cout << entries[i].value1;
+        if (entries[i].value2 != NO_VALUE) {
+          cout << ',' << entries[i].value2;
         }
-
-        for(unsigned int i = 0; i < numStudents; i++){
-            if(studentBuffer.find(i) != studentBuffer.end()){
-                //found
-                Printer::Info info = studentBuffer.at(i);
-                printInfo(info);
-            }
-
-            cout << "\t";
-        }
-
-        for(unsigned int i = 0; i < numVending; i++){
-            if(vendingBuffer.find(i) != vendingBuffer.end()){
-                //found
-                Printer::Info info = vendingBuffer.at(i);
-                printInfo(info);
-            }
-            cout << "\t";
-        }
-
-        for(unsigned int i = 0; i < numCouriers; i++){
-            if(courierBuffer.find(i) != courierBuffer.end()){
-                //found
-                Printer::Info info = courierBuffer.at(i);
-                printInfo(info);
-            }
-            cout << "\t";
-        }
-
-        cout << endl;
+      }
+      entries[i].filled = false;
     }
-    cout << "***********************" << endl;
-
+    cout << "\t";
+  }
+  cout << endl;
 }
-

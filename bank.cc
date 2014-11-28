@@ -2,37 +2,26 @@
 
 Bank::Bank( unsigned int numStudents ) : numStudents(numStudents) {
     waitingOnDeposit = new uCondition[numStudents];
+    accounts = new int[ numStudents ];
     for(unsigned int i = 0; i < numStudents; i++){
-        accounts.insert(std::pair<unsigned int, int>(i, 0));
+        accounts[i] = 0;
     }
 }
 
 Bank::~Bank(){
     delete[] waitingOnDeposit;
+    delete[] accounts;
 }
 
 void Bank::deposit( unsigned int id, unsigned int amount ) {
-    std::map<unsigned int, int>::iterator it = accounts.find(id);
-    if(it != accounts.end()){
-        //account is found
-        it->second+= amount;
-
-        waitingOnDeposit[id].signal();
-    }
+    accounts[id] += amount;
+    waitingOnDeposit[id].signal();
 }
 
 void Bank::withdraw( unsigned int id, unsigned int amount ) {
-    std::map<unsigned int, int>::iterator it = accounts.find(id);
-    if(it != accounts.end()){
-        //account is found
-
-        int accountBal = it->second;
-
-        while(amount > accountBal){
-            waitingOnDeposit[id].wait();
-        }
-
-        it->second-= amount;
+    while( amount > accounts[id] ){
+        waitingOnDeposit[id].wait();
     }
+    accounts[id] -= amount;
 }
 

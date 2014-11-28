@@ -13,20 +13,20 @@ void Parent::main() {
 
         _Accept(~Parent){
             //print finish statement
-            printer.print(Printer::Parent, 'f');
+            printer.print(Printer::Parent, 'F'); //duplicate, can i leave this blank?
         } _Else {
             //yield before giving money
             yield(parentalDelay);
             //get random number from [1,3]
             unsigned int money = MP(1,3);
 
-            unsigned int studentId = MP(0, numStudents - 1);
+            unsigned int studentId = MP(numStudents - 1);
 
             //deposit money into student's account
             bank.deposit(studentId, money);
 
             //print deposit statement
-            printer.print(Printer::Parent, 'd', studentId, money);
+            printer.print(Printer::Parent, 'D', studentId, money);
         }
 
     }

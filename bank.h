@@ -6,10 +6,9 @@
 _Monitor Bank {
   private:
     unsigned int numStudents;
-
     uCondition* waitingOnDeposit;
-
-    std::map<unsigned int, int> accounts;   //map between studentId and money in account   
+    int* accounts;
+  
   public:
     Bank( unsigned int numStudents );
     ~Bank();
