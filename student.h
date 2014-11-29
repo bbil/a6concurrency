@@ -5,7 +5,7 @@
 
 #include "watcard.h"
 
-_Cormonitor Printer;
+_Monitor Printer;
 _Task NameServer;
 _Task WATCardOffice;
 _Task VendingMachine;

@@ -1,7 +1,7 @@
 #ifndef VENDINGMACHINE_H
 #define VENDINGMACHINE_H
 
-_Cormonitor Printer;
+_Monitor Printer;
 _Task NameServer;
 class WATCard;
 

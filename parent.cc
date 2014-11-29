@@ -12,8 +12,6 @@ void Parent::main() {
     for(;;){
 
         _Accept(~Parent){
-            //print finish statement
-            printer.print(Printer::Parent, 'f');
             break;
         } _Else {
             //yield before giving money
@@ -27,7 +25,7 @@ void Parent::main() {
             bank.deposit(studentId, money);
 
             //print deposit statement
-            printer.print(Printer::Parent, 'd', studentId, money);
+            printer.print(Printer::Parent, 'D', studentId, money);
         }
 
     }

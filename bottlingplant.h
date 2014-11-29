@@ -1,7 +1,7 @@
 #ifndef BOTTLINGPLANT_H
 #define BOTTLINGPLANT_H
 
-_Cormonitor Printer;
+_Monitor Printer;
 _Task NameServer;
 #include "vendingmachine.h"
 #include "truck.h"

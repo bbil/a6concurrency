@@ -1,7 +1,7 @@
 #ifndef PARENT_H
 #define PARENT_H
 
-_Cormonitor Printer;
+_Monitor Printer;
 _Monitor Bank;
 #include "mprng.h"
 

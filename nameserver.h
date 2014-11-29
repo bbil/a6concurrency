@@ -4,7 +4,7 @@
 #include <map>
 
 _Task VendingMachine;
-_Cormonitor Printer;
+_Monitor Printer;
 
 _Task NameServer {
   private:

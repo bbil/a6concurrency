@@ -4,7 +4,7 @@
 #include <vector>
 #include "mprng.h"
 
-_Cormonitor Printer;
+_Monitor Printer;
 _Task NameServer;
 _Task BottlingPlant;
 _Task VendingMachine;
