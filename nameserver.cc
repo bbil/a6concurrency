@@ -3,15 +3,20 @@
 #include "vendingmachine.h"
 
 NameServer::NameServer( Printer &prt, unsigned int numVendingMachines, unsigned int numStudents ) : printer(prt), numVendingMachines(numVendingMachines), numStudents(numStudents) {
+    studentToVending = new int[numStudents];
+    vendingMachines = new VendingMachine*[numVendingMachines];
     
     //initialize map that tells a student which vending machine to go to
-    for(unsigned int i=0; i < numStudents; i++){
-        unsigned int vendingMachineIdx = i % numVendingMachines;
-
-        studentToVending.insert(std::pair<unsigned int, unsigned int>(i, vendingMachineIdx));
+    for( unsigned int i=0; i < numStudents; i++ ) {
+        studentToVending[i] = i % numVendingMachines;
     }
 
     registeredMachines = 0;
+}
+
+NameServer::~NameServer() {
+    delete [] studentToVending;
+    delete [] vendingMachines;
 }
 
 void NameServer::VMregister( VendingMachine *vendingmachine ) {
@@ -20,32 +25,17 @@ void NameServer::VMregister( VendingMachine *vendingmachine ) {
 
 VendingMachine *NameServer::getMachine( unsigned int id ) {
     VendingMachine* vm = NULL;
+	
+	vm = vendingMachines[studentToVending[id]];
+	studentToVending[id] = (studentToVending[id] + 1) % numVendingMachines; //possibly change
 
-    unsigned int vendingMachineIdx = studentToVending.at(id);
-
-    if(vendingMachines.find(vendingMachineIdx) != vendingMachines.end()){
-        vm = vendingMachines.at(vendingMachineIdx);
-
-
-        //give the student the next vending machine id (modulo), for the next time getMachine is called by the student
-        unsigned int newIdx = (vendingMachineIdx + 1) % numVendingMachines;
-        studentToVending[id] = newIdx;
-    }
-
-    printer.print(Printer::NameServer, 'R', id, vendingMachineIdx);
+    printer.print(Printer::NameServer, 'N', id, vm->getId());
 
     return vm;
 }
 
 VendingMachine **NameServer::getMachineList() {
-
-    VendingMachine** machines = new VendingMachine*[numVendingMachines];
-
-    for(unsigned int i=0; i < numVendingMachines; i++){
-        machines[i] = vendingMachines.at(i);
-    }
-
-    return machines;
+    return vendingMachines;
 }
 
 void NameServer::main() {
@@ -54,9 +44,9 @@ void NameServer::main() {
 
     for(;;){
         _Accept(~VendingMachine) break;
-        or _When(registeredMachines < numVendingMachines) _Accept(VMregister){
-            registeredMachines+=1;
-            vendingMachines.insert(std::pair<unsigned int, VendingMachine*>( _registerMachine->getId(), _registerMachine));
+        or _When( registeredMachines < numVendingMachines ) _Accept(VMregister){
+            vendingMachines[registeredMachines] = _registerMachine->getId();
+            registeredMachines += 1;
             printer.print(Printer::NameServer, 'R', _registerMachine->getId());
         }
         or _When(registeredMachines == numVendingMachines) _Accept(getMachine, getMachineList)
