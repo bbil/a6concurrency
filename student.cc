@@ -15,11 +15,13 @@ Student::~Student(){
 
 void Student::main(){
 
+    //init student parameters
     bottlesToPurchase = MP(1,maxPurchases);
     favouriteFlavour = MP(0,3);
 
     printer.print(Printer::Student, id, 'S', favouriteFlavour, bottlesToPurchase);
 
+    //ask watcard office to make a card, returned value is a future
     watCard = cardOffice.create(id, 5);
 
     vendingMachine = nameServer.getMachine(id);
@@ -37,20 +39,22 @@ void Student::main(){
             printer.print(Printer::Student, id, 'B', watCard()->getBalance());
 
             bottlesToPurchase--;
-            //call is successful, drink the soda
         } catch(WATCardOffice::Lost){
             printer.print(Printer::Student, id, 'L');
             lostError = true;
             watCard = cardOffice.create(id, 5);
         } catch(VendingMachine::Stock){
+            //must go to the next vending machine given by the name server in order to get the desired flavour
             vendingMachine = nameServer.getMachine(id);
             printer.print(Printer::Student, id, 'V', vendingMachine->getId());
         } catch(VendingMachine::Funds){
+            //not enough money to buy the soda, transfer money to the card
             unsigned int cost = vendingMachine->cost();
             watCard = cardOffice.transfer(id, cost+5, watCard());
         }
 
         if(lostError){
+            //if the card is lost, skip the upcoming yield since the call to buy never happened
             lostError = false;
             continue;
         } 

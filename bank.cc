@@ -2,6 +2,7 @@
 
 Bank::Bank( unsigned int numStudents ) : numStudents(numStudents) {
     waitingOnDeposit = new uCondition[numStudents];
+
     for(unsigned int i = 0; i < numStudents; i++){
         accounts.insert(std::pair<unsigned int, int>(i, 0));
     }
@@ -26,8 +27,9 @@ void Bank::withdraw( unsigned int id, unsigned int amount ) {
     if(it != accounts.end()){
         //account is found
 
-
         while(amount > it->second){
+            //wait on money to be deposited to the student's account, must re-check the balance
+            //since a single deposit may not be enough
             waitingOnDeposit[id].wait();
         }
 

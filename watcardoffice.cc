@@ -7,8 +7,8 @@
 WATCardOffice::WATCardOffice( Printer &prt, Bank &bank, unsigned int numCouriers )
     : printer(prt), numCouriers(numCouriers){
 
+        //initialize couriers
         couriers = new Courier*[numCouriers];
-
         for(unsigned int i = 0; i < numCouriers; i++){
             couriers[i] = new Courier(prt, bank, this, i);
         }
@@ -30,13 +30,14 @@ void WATCardOffice::main() {
 
     for(;;){
         _Accept(~WATCardOffice){
-            fin = true;
-
-            //not sure if needed
+            //flush all outstanding jobs
             while(!jobs.empty()){
                 _Accept(requestWork);
             }
 
+            fin = true;
+
+            //allow all couriers to do one final requestWork call, so that the courier can terminate
             for(unsigned int i=0; i < numCouriers; i++){
                 _Accept(requestWork);
             }
@@ -51,6 +52,7 @@ void WATCardOffice::main() {
 }
 
 WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount ) {
+    //create a new job and put it on the queue
     Args args(sid, amount);
     Job* job = new Job(args);
 
@@ -62,6 +64,7 @@ WATCard::FWATCard WATCardOffice::create( unsigned int sid, unsigned int amount )
 }
 
 WATCard::FWATCard WATCardOffice::transfer( unsigned int sid, unsigned int amount, WATCard *card ) {
+    //create a new job and put it on the queue
     Args args(sid, amount, card);
     Job* job = new Job(args);
 
@@ -73,6 +76,7 @@ WATCard::FWATCard WATCardOffice::transfer( unsigned int sid, unsigned int amount
 }
 
 WATCardOffice::Job *WATCardOffice::requestWork() {
+    //give couriers null if watcard office is beginning to terminate
     if(fin) return NULL;
 
     //job available, pop it off
@@ -92,6 +96,7 @@ void WATCardOffice::Courier::main(){
         //request work from administrator, blocks if no work available
         Job* job = office->requestWork();
 
+        //terminate if job recieved is null, means that watcard office is also terminating
         if(!job) break;
 
         //gather arguments

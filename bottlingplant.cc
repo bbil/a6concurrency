@@ -42,7 +42,9 @@ void BottlingPlant::main() {
         _Accept(~BottlingPlant){
             isClosing = true;
 
+            //let the truck in one last time, so that it can be told to stop via the isClosing flag
             _Accept(getShipment);
+
             break;
         }
         or _Accept(getShipment){

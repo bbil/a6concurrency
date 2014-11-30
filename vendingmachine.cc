@@ -18,8 +18,10 @@ void VendingMachine::buy( VendingMachine::Flavours flavour, WATCard &card ) {
     _flavour = flavour;
     _card = &card;
 
+    //wait for server to perform the bulk of the operation
     wait.wait();
 
+    //throw exception based on the state of the vending machine determined in main
     if(state == FUNDS){
         _Throw Funds();
     } else if(state == STOCK){
@@ -31,6 +33,7 @@ unsigned int *VendingMachine::inventory() {
     return sodaInventory;
 }
 
+//restocked is a no-op, external scheduling is used to control the state of the vending
 void VendingMachine::restocked() {}
 
 _Nomutex unsigned int VendingMachine::cost() {
@@ -52,6 +55,7 @@ void VendingMachine::main(){
         _Accept(~VendingMachine) break;
         or _Accept(buy){
 
+            //store information needed into local variables
             unsigned int flavourIdx = (unsigned int)_flavour;
             unsigned int stock = sodaInventory[flavourIdx];
             unsigned int bal = _card->getBalance();
@@ -76,8 +80,9 @@ void VendingMachine::main(){
             wait.signalBlock();
         }
         or _Accept(inventory){
+            //wait for a call to restock, no calls to buy can happen once in this block
             printer.print(Printer::Vending, id, 'r');
-            //wait for a call to restock
+            
             _Accept(restocked);
 
             printer.print(Printer::Vending, id, 'R');
