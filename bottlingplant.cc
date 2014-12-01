@@ -34,7 +34,7 @@ void BottlingPlant::produceSoda(){
 void BottlingPlant::main() {
 
     printer.print(Printer::BottlingPlant, 'S');
-
+    yield(timeBetweenShipments);
     produceSoda();
 
     for(;;){
